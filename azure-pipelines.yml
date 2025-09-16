@@ -1,0 +1,21 @@
+- job: BuildBackendNode
+    displayName: 'Build Backend (Node.js)'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '$(nodeVersion)'
+      displayName: 'Install Node.js'
+    
+    - script: |
+        cd back
+        npm ci
+        npm test
+        npm run build
+      displayName: 'Backend - Install, Test & Build'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'back'
+        ArtifactName: 'backend-build'
+        publishLocation: 'Container'
+      displayName: 'Publish Backend Artifacts'
