@@ -1,18 +1,31 @@
-- job: BuildBackendNode
+trigger:
+  - main  # rama que dispara el pipeline
+
+pool:
+  name: 'SelfHosted'   # o 'Azure Pipelines' si quieres probar con agente de Microsoft
+
+variables:
+  nodeVersion: '18.x'
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+  - job: BuildBackendNode
     displayName: 'Build Backend (Node.js)'
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '$(nodeVersion)'
       displayName: 'Install Node.js'
-    
+
     - script: |
         cd back
         npm ci
         npm test
         npm run build
       displayName: 'Backend - Install, Test & Build'
-    
+
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: 'back'
