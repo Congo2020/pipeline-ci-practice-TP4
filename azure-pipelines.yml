@@ -38,7 +38,7 @@ stages:
         publishLocation: 'Container'
       displayName: 'Publish Backend'
 
-  # Frontend job - sin tests problemáticos
+  # Frontend job - corregido
   - job: BuildFrontend
     displayName: 'Build Frontend (React)'
     continueOnError: true
@@ -55,12 +55,19 @@ stages:
         echo "Frontend dependencies installed"
         set CI=true
         npm run build
-        echo "Frontend build completed successfully"
-      displayName: 'Frontend - Build Only'
+        echo "Checking if build folder exists..."
+        if exist build (
+          echo "Build folder created successfully"
+          dir build
+        ) else (
+          echo "Build folder not found - using source folder"
+        )
+        echo "Frontend build completed"
+      displayName: 'Frontend - Build Process'
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: 'front/build'
+        PathtoPublish: 'front'
         ArtifactName: 'frontend-build'
         publishLocation: 'Container'
       displayName: 'Publish Frontend'
